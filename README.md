@@ -8,7 +8,7 @@
 # ATResolve
 AT Protocol PLC/DID/Whatever Resolver
 
-I just want to resolve a handle to a DID and PDS.
+I just want to resolve a handle to a DID and PDS. There's more to do, but this is a start. [This](https://github.com/mackuba/didkit/blob/master/lib/didkit/resolver.rb) could be a good reference.
 
 ## Integration
 
