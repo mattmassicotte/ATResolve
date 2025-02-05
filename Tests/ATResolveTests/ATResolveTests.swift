@@ -1,5 +1,5 @@
 import Testing
-@testable import ATResolve
+import ATResolve
 
 struct ATResolveTests {
 	@Test

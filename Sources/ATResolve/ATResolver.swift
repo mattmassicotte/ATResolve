@@ -70,6 +70,9 @@ extension URLSession {
 }
 
 public struct ATResolver {
+	public init() {
+	}
+	
 	public func didForDomain(_ name: String) async throws -> String? {
 		let resolver = try AsyncDNSResolver()
 		
