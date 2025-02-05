@@ -3,7 +3,7 @@
 import PackageDescription
 
 let package = Package(
-	name: "BlueskyResolve",
+	name: "ATResolve",
 	platforms: [
 		.macOS(.v10_15),
 		.macCatalyst(.v13),
@@ -14,21 +14,21 @@ let package = Package(
 	],
 	products: [
 		.library(
-			name: "BlueskyResolve",
-			targets: ["BlueskyResolve"]),
+			name: "ATResolve",
+			targets: ["ATResolve"]),
 	],
 	dependencies: [
 		.package(url: "https://github.com/apple/swift-async-dns-resolver.git", from: "0.4.0")
 	],
 	targets: [
 		.target(
-			name: "BlueskyResolve",
+			name: "ATResolve",
 			dependencies: [
 				.product(name: "AsyncDNSResolver", package: "swift-async-dns-resolver"),
 			]),
 		.testTarget(
-			name: "BlueskyResolveTests",
-			dependencies: ["BlueskyResolve"]
+			name: "ATResolveTests",
+			dependencies: ["ATResolve"]
 		),
 	]
 )

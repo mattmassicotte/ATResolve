@@ -1,10 +1,10 @@
 import Testing
-@testable import BlueskyResolve
+@testable import ATResolve
 
-struct BlueskyResolveTests {
+struct ATResolveTests {
 	@Test
 	func resolveHandle() async throws {
-		let resolver = BlueskyResolver()
+		let resolver = ATResolver()
 		
 		let data = try await resolver.resolveHandle("massicotte.org")
 		
@@ -15,7 +15,7 @@ struct BlueskyResolveTests {
 	
 	@Test
 	func didForDomain() async throws {
-		let resolver = BlueskyResolver()
+		let resolver = ATResolver()
 		
 		let did = try await resolver.didForDomain("massicotte.org")
 		
@@ -24,7 +24,7 @@ struct BlueskyResolveTests {
 	
 	@Test
 	func blueskyGetProfile() async throws {
-		let resolver = BlueskyResolver()
+		let resolver = ATResolver()
 		
 		let profile = try await resolver.blueskyGetProfile("massicotte.org")
 		

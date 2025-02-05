@@ -1,7 +1,7 @@
 import AsyncDNSResolver
 import Foundation
 
-enum BlueskyResolverError: Error {
+enum ATResolverError: Error {
 	case urlInvalid
 	case requestFailed
 }
@@ -36,7 +36,7 @@ public struct PLCDirectoryResolveDidResponse: Codable, Hashable, Sendable {
 extension URLSession {
 	func jsonRequest<T: Decodable>(_ components: URLComponents) async throws -> T {
 		guard let url = components.url else {
-			throw BlueskyResolverError.urlInvalid
+			throw ATResolverError.urlInvalid
 		}
 		
 		var request = URLRequest(url: url)
@@ -62,14 +62,14 @@ extension URLSession {
 			print("data:", String(decoding: data, as: UTF8.self))
 			print("response:", response)
 			
-			throw BlueskyResolverError.requestFailed
+			throw ATResolverError.requestFailed
 		}
 		
 		return try JSONDecoder().decode(T.self, from: data)
 	}
 }
 
-public struct BlueskyResolver {
+public struct ATResolver {
 	public func didForDomain(_ name: String) async throws -> String? {
 		let resolver = try AsyncDNSResolver()
 		
