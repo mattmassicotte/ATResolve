@@ -10,6 +10,10 @@ public struct ResolvedData: Codable, Hashable, Sendable {
 	public let did: String
 	public let handle: String
 	public let serviceEndpoint: String?
+	
+	public var personalDataServerURL: URL? {
+		serviceEndpoint.flatMap(URL.init(string:))
+	}
 }
 
 public struct BlueskyProfile: Codable, Hashable, Sendable {
