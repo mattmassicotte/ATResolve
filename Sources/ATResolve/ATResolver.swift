@@ -110,7 +110,7 @@ public struct ATResolver {
 		return try await URLSession.shared.jsonRequest(components)
 	}
 	
-	private func plcDirectoryQuery(_ did: String) async throws -> PLCDirectoryResolveDidResponse {
+	public func plcDirectoryQuery(_ did: String) async throws -> PLCDirectoryResolveDidResponse {
 		var components = URLComponents()
 		
 		components.host = "plc.directory"
