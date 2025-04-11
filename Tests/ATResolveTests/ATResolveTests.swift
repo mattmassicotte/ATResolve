@@ -30,4 +30,12 @@ struct ATResolveTests {
 		
 		#expect(profile.did == "did:plc:klsh7edzj3jmxucibyjqstb3")
 	}
+	
+	@Test func bskySocialHandle() async throws {
+		let resolver = ATResolver()
+		
+		let profile = try await resolver.resolveHandle("cjrdev.bsky.social")
+		
+		#expect(profile != nil)
+	}
 }

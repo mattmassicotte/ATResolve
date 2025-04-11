@@ -78,6 +78,11 @@ public struct ATResolver {
 	}
 	
 	public func didForDomain(_ name: String) async throws -> String? {
+		// I don't understand exactly why, but this triggers a timeout. When I do it with `dig` it returns right away...
+		if name.hasSuffix(".bsky.social") {
+			return nil
+		}
+		
 		let resolver = try AsyncDNSResolver()
 		
 		let txtRecords = try await resolver.queryTXT(name: "_atproto." + name)
