@@ -1,5 +1,8 @@
 import AsyncDNSResolver
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
 enum ATResolverError: Error {
 	case urlInvalid
