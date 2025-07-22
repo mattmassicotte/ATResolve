@@ -25,12 +25,24 @@ dependencies: [
 ```swift
 import ATResolve
 
-let resolver = ATResolver()
+let resolver = ATResolver(provider: URLSession.shared)
 
 let data = try await resolver.resolveHandle("massicotte.org")
 
 print(data.did)
 print(data.serviceEndpoint)
+```
+
+The `ATResolver` type also supports custom HTTP loading for compatibility with server frameworks that don't use URLSession.
+
+```swift
+struct CustomProvider: ResponseProviding {
+    func decodeJSON<T>(at urlString: String, queryItems: [(String, String)]) async throws -> T where T : Decodable {
+        // your custom code that loads and decodes JSON goes here
+    }
+}
+
+let resolver = ATResolver(provider: CustomProvider())
 ```
 
 ## Contributing and Collaboration

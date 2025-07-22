@@ -1,8 +1,4 @@
 import AsyncDNSResolver
-import Foundation
-#if canImport(FoundationNetworking)
-import FoundationNetworking
-#endif
 
 enum ATResolverError: Error {
 	case urlInvalid
@@ -13,10 +9,6 @@ public struct ResolvedData: Codable, Hashable, Sendable {
 	public let did: String
 	public let handle: String
 	public let serviceEndpoint: String?
-	
-	public var personalDataServerURL: URL? {
-		serviceEndpoint.flatMap(URL.init(string:))
-	}
 }
 
 public struct BlueskyProfile: Codable, Hashable, Sendable {
@@ -40,44 +32,21 @@ public struct PLCDirectoryResolveDidResponse: Codable, Hashable, Sendable {
 	}
 }
 
-extension URLSession {
-	func jsonRequest<T: Decodable>(_ components: URLComponents) async throws -> T {
-		guard let url = components.url else {
-			throw ATResolverError.urlInvalid
-		}
-		
-		var request = URLRequest(url: url)
-		
-		request.httpMethod = "GET"
-		request.setValue("application/json", forHTTPHeaderField: "Accept")
-		
-		return try await jsonRequest(request)
-	}
-	
-	func jsonRequest<T: Decodable>(_ request: URLRequest) async throws -> T {
-		var updatedRequest = request
-		
-		updatedRequest.httpMethod = "GET"
-		updatedRequest.setValue("application/json", forHTTPHeaderField: "Accept")
-		
-		let (data, response) = try await URLSession.shared.data(for: updatedRequest)
-		
-		guard
-			let httpResponse = response as? HTTPURLResponse,
-			httpResponse.statusCode >= 200 && httpResponse.statusCode < 300
-		else {
-			print("data:", String(decoding: data, as: UTF8.self))
-			print("response:", response)
-			
-			throw ATResolverError.requestFailed
-		}
-		
-		return try JSONDecoder().decode(T.self, from: data)
+public protocol ResponseProviding {
+	func decodeJSON<T: Decodable>(at urlString: String, queryItems: [(String, String)]) async throws -> T
+}
+
+extension ResponseProviding {
+	public func decodeJSON<T: Decodable>(at urlString: String) async throws -> T {
+		try await decodeJSON(at: urlString, queryItems: [])
 	}
 }
 
-public struct ATResolver {
-	public init() {
+public struct ATResolver<Provider: ResponseProviding> {
+	public let provider: Provider
+
+	public init(provider: Provider) {
+		self.provider = provider
 	}
 	
 	public func didForDomain(_ name: String) async throws -> String? {
@@ -106,35 +75,38 @@ public struct ATResolver {
 	}
 	
 	public func blueskyGetProfile(_ actor: String) async throws -> BlueskyProfile {
-		var components = URLComponents()
-		
-		components.host = "public.api.bsky.app"
-		components.scheme = "https"
-		components.path = "/xrpc/app.bsky.actor.getProfile"
-		components.queryItems = [
-			URLQueryItem(name: "actor", value: actor)
-		]
-		
-		return try await URLSession.shared.jsonRequest(components)
+		try await provider.decodeJSON(
+			at: "https://public.api.bsky.app/xrpc/app.bsky.actor.getProfile",
+			queryItems: [("actor", actor)]
+		)
 	}
 	
 	public func plcDirectoryQuery(_ did: String) async throws -> PLCDirectoryResolveDidResponse {
-		var components = URLComponents()
-		
-		components.host = "plc.directory"
-		components.scheme = "https"
-		components.path = "/" + did
-		
-		return try await URLSession.shared.jsonRequest(components)
+		try await provider.decodeJSON(
+			at: "https://plc.directory/\(did)"
+		)
 	}
 	
 	public func resolveHandle(_ handle: String) async throws -> ResolvedData? {
 		guard let did = try await didForHandle(handle) else {
 			return nil
 		}
-		
+
+		print("did: \(did)")
 		let directoryResult = try await plcDirectoryQuery(did)
 		
 		return ResolvedData(did: did, handle: handle, serviceEndpoint: directoryResult.pds?.serviceEndpoint)
 	}
 }
+
+extension ATResolver: Sendable where Provider: Sendable {}
+
+#if canImport(Foundation)
+import Foundation
+
+extension ResolvedData {
+	public var personalDataServerURL: URL? {
+		serviceEndpoint.flatMap(URL.init(string:))
+	}
+}
+#endif
