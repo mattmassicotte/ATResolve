@@ -56,7 +56,7 @@ public struct ATResolver<Provider: ResponseProviding> {
 		return didRecord?.txt.components(separatedBy: "=").last
 	}
 	
-	public func didForHandle(_ handle: String) async throws -> String? {
+	public func didForHandle(_ handle: String) async throws -> String {
 		if let did = try await didForDomain(handle) {
 			return did
 		}
@@ -83,11 +83,8 @@ public struct ATResolver<Provider: ResponseProviding> {
 		)
 	}
 	
-	public func resolveHandle(_ handle: String) async throws -> ResolvedData? {
-		guard let did = try await didForHandle(handle) else {
-			return nil
-		}
-
+	public func resolveHandle(_ handle: String) async throws -> ResolvedData {
+		let did = try await didForHandle(handle)
 		print("did: \(did)")
 		let directoryResult = try await plcDirectoryQuery(did)
 		
