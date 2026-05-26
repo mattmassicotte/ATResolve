@@ -78,7 +78,9 @@ public struct ATResolver<Provider: ResponseProviding> {
 				queryItems: [("actor", actor)]
 			)
 		} catch let error as XRPCError
-					where error.error == "InvalidRequest" && error.message?.localizedCaseInsensitiveContains("not found") == true {
+					where error.error == "InvalidRequest" &&
+					(error.message?.localizedCaseInsensitiveContains("not found") == true ||
+					error.message?.localizedCaseInsensitiveContains("invalid app.bsky.actor.getProfile params") == true) {
 			return nil
 		}
 	}

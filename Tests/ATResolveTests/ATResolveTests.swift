@@ -44,6 +44,15 @@ struct ATResolveTests {
 		#expect(profile == nil)
 	}
 	
+	@Test
+	func blueskyGetProfileReturnsNilForInvalidFormatHandle() async throws {
+		let resolver = ATResolver(provider: URLSession.shared)
+		
+		let profile = try await resolver.blueskyGetProfile("nonexistent@example.com")
+		
+		#expect(profile == nil)
+	}
+	
 	@Test func bskySocialHandle() async throws {
 		let resolver = ATResolver(provider: URLSession.shared)
 
