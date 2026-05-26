@@ -5,6 +5,11 @@ enum ATResolverError: Error {
 	case requestFailed
 }
 
+struct XRPCError: Decodable, Error {
+	let error: String
+	let message: String?
+}
+
 public struct ResolvedData: Codable, Hashable, Sendable {
 	public let did: String
 	public let handle: String
@@ -56,21 +61,26 @@ public struct ATResolver<Provider: ResponseProviding> {
 		return didRecord?.txt.components(separatedBy: "=").last
 	}
 	
-	public func didForHandle(_ handle: String) async throws -> String {
+	public func didForHandle(_ handle: String) async throws -> String? {
 		if let did = try await didForDomain(handle) {
 			return did
 		}
 		
-		return try await blueskyGetProfile(handle).did
+		return try await blueskyGetProfile(handle)?.did
 	}
 	
-	public func blueskyGetProfile(_ actor: String) async throws -> BlueskyProfile {
-		try await provider.decodeJSON(
-			host: "public.api.bsky.app",
-			path: "/xrpc/app.bsky.actor.getProfile",
-			headers: ["Accept": "application/json"],
-			queryItems: [("actor", actor)]
-		)
+	public func blueskyGetProfile(_ actor: String) async throws -> BlueskyProfile? {
+		do {
+			return try await provider.decodeJSON(
+				host: "public.api.bsky.app",
+				path: "/xrpc/app.bsky.actor.getProfile",
+				headers: ["Accept": "application/json"],
+				queryItems: [("actor", actor)]
+			)
+		} catch let error as XRPCError
+					where error.error == "InvalidRequest" && error.message?.localizedCaseInsensitiveContains("not found") == true {
+			return nil
+		}
 	}
 	
 	public func plcDirectoryQuery(
@@ -83,8 +93,10 @@ public struct ATResolver<Provider: ResponseProviding> {
 		)
 	}
 	
-	public func resolveHandle(_ handle: String) async throws -> ResolvedData {
-		let did = try await didForHandle(handle)
+	public func resolveHandle(_ handle: String) async throws -> ResolvedData? {
+		guard let did = try await didForHandle(handle) else {
+			return nil
+		}
 		print("did: \(did)")
 		let directoryResult = try await plcDirectoryQuery(did)
 		

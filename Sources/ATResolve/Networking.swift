@@ -31,8 +31,11 @@ extension URLSession: ResponseProviding {
 		else {
 			print("data:", String(decoding: data, as: UTF8.self))
 			print("response:", response)
-
-			throw ATResolverError.requestFailed
+			if let xrpcError = try? JSONDecoder().decode(XRPCError.self, from: data) {
+				throw xrpcError
+			} else {
+				throw ATResolverError.requestFailed
+			}
 		}
 		return data
 	}
