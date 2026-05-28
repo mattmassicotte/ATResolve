@@ -32,7 +32,25 @@ struct ATResolveTests {
 
 		let profile = try await resolver.blueskyGetProfile("massicotte.org")
 		
-		#expect(profile.did == "did:plc:klsh7edzj3jmxucibyjqstb3")
+		#expect(profile?.did == "did:plc:klsh7edzj3jmxucibyjqstb3")
+	}
+	
+	@Test
+	func blueskyGetProfileWithNonexistentHandle() async throws {
+		let resolver = ATResolver(provider: URLSession.shared)
+		
+		let profile = try await resolver.blueskyGetProfile("nonexistent.example.com")
+		
+		#expect(profile == nil)
+	}
+	
+	@Test
+	func blueskyGetProfileReturnsNilForInvalidFormatHandle() async throws {
+		let resolver = ATResolver(provider: URLSession.shared)
+		
+		let profile = try await resolver.blueskyGetProfile("nonexistent@example.com")
+		
+		#expect(profile == nil)
 	}
 	
 	@Test func bskySocialHandle() async throws {
@@ -40,7 +58,7 @@ struct ATResolveTests {
 
 		let profile = try await resolver.resolveHandle("cjrdev.bsky.social")
 		
-		#expect(profile != nil)
+		#expect(profile?.did == "did:plc:wlef3srsa3hlyzj2hy6yncrh")
 	}
 
 	@Test func decodeWithCustomProvider() async throws {
