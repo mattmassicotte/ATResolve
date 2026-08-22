@@ -56,7 +56,7 @@ By participating in this project you agree to abide by the [Contributor Code of 
 
 [build status]: https://github.com/mattmassicotte/ATResolve/actions
 [build status badge]: https://github.com/mattmassicotte/ATResolve/workflows/CI/badge.svg
-[platforms]: https://swiftpackageindex.com/mattmassicotte/ATResolve
-[platforms badge]: https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fmattmassicotte%2FATResolve%2Fbadge%3Ftype%3Dplatforms
+[platforms]: https://swiftpackageindex.com/ATProtoKit/ATResolve
+[platforms badge]: https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FATProtoKit%2FATResolve%2Fbadge%3Ftype%3Dplatforms
 [documentation]: https://swiftpackageindex.com/mattmassicotte/ATResolve/main/documentation
 [documentation badge]: https://img.shields.io/badge/Documentation-DocC-blue
