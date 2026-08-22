@@ -15,7 +15,7 @@ I just want to resolve a handle to a DID and PDS. There's more to do, but this i
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/mattmassicotte/ATResolve", branch: "main")
+    .package(url: "https://github.com/ATProtoKit/ATResolve", branch: "main")
 ]
 ```
 
@@ -26,7 +26,7 @@ import ATResolve
 
 let resolver = ATResolver(provider: URLSession.shared)
 
-let data = try await resolver.resolveHandle("massicotte.org")
+let data = try await resolver.resolveHandle("lucy.bsky.social")
 
 print(data.did)
 print(data.serviceEndpoint)
@@ -52,7 +52,7 @@ I prefer collaboration, and would love to find ways to work together if you have
 
 I prefer indentation with tabs for improved accessibility. But, I'd rather you use the system you want and make a PR than hesitate because of whitespace.
 
-By participating in this project you agree to abide by the [Contributor Code of Conduct](CODE_OF_CONDUCT.md).
+By participating in this project you agree to abide by the [Contributor Code of Conduct](https://github.com/ATProtoKit/.github/blob/main/CODE_OF_CONDUCT.md).
 
 [build status]: https://github.com/mattmassicotte/ATResolve/actions
 [build status badge]: https://github.com/mattmassicotte/ATResolve/workflows/CI/badge.svg
